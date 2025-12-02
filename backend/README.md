@@ -4,7 +4,8 @@ A high-accuracy OCR system specialized for Vietnamese Identity Cards (CCCD), pow
 
 ## 🚀 Features
 
--   **High Accuracy:** Uses EasyOCR deep learning models optimized for Vietnamese.
+-   **High Accuracy:**
+    -   **Detection & Recognition:** Uses **EasyOCR** (CRAFT + CRNN), which is trained on **ICDAR2015** and other benchmarks for state-of-the-art performance.
 -   **Smart Post-Processing:**
     -   **Line Merging:** Automatically joins fragmented words into complete sentences.
     -   **Typo Fixer:** Corrects common OCR errors (e.g., `199C` -> `1990`).

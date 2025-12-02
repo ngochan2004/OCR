@@ -3,16 +3,21 @@
 This document explains the core algorithms used in the Vietnamese CCCD OCR system.
 
 ## 1. Core Engine: EasyOCR
-We use **EasyOCR** as the backbone for text detection and recognition.
+We use **EasyOCR** as the unified engine for both text detection and recognition.
 
+### A. Text Detection: CRAFT (ICDAR2015 Compliant)
+-   **Model:** EasyOCR uses the **CRAFT (Character Region Awareness for Text Detection)** algorithm.
+-   **Performance:** CRAFT is a state-of-the-art scene text detector trained on **ICDAR2015** and other datasets. It is highly effective at detecting text of varying sizes, orientations, and shapes.
+-   **Why CRAFT?** It outperforms standard EAST implementations in many complex scenarios, especially for curved or irregular text.
+
+### B. Text Recognition: CRNN
+-   **Model:** CRNN/ResNet based architecture.
 -   **Why EasyOCR?**
-    -   It uses a deep learning approach (CRAFT for detection + CRNN/ResNet for recognition).
     -   It has built-in support for **Vietnamese** (handling accents/diacritics much better than Tesseract).
-    -   It is robust against noisy backgrounds and rotated text.
-
+    -   It is robust against noisy backgrounds.
 -   **Configuration:**
-    -   `languages=['vi', 'en']`: We load both Vietnamese and English models. English is crucial for accurately reading numbers (ID, Date) and mixed content.
-    -   `gpu=False`: Configured for CPU usage (can be enabled if CUDA is available).
+    -   `languages=['vi', 'en']`: We load both Vietnamese and English models.
+    -   `gpu=False`: Configured for CPU usage.
 
 ## 2. Post-Processing Pipeline (`ocr/post_process.py`)
 Raw OCR output is often fragmented (e.g., "CỘNG" "HÒA" "XÃ" "HỘI" as separate boxes). We implement a custom pipeline to fix this.
@@ -52,9 +57,11 @@ We iterate through the merged lines and look for keywords:
 
 ```mermaid
 graph TD
-    A[Input Image] --> B[EasyOCR Engine]
-    B --> C{Raw Output}
-    C --> D[Line Merging]
+    A[Input Image] --> B[EasyOCR (CRAFT Detector)]
+    B --> C[Text Boxes]
+    C --> D[EasyOCR (CRNN Recognizer)]
+    D --> E{Raw Output}
+    E --> F[Line Merging]
     D --> E[Noise Filtering]
     E --> F[Text Cleaning]
     F --> G[Structure Parser]

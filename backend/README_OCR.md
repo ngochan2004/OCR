@@ -2,14 +2,14 @@
 
 ## Overview
 
-A production-ready OCR system that follows ICDAR 2015 evaluation standards with EAST text detection and Tesseract recognition.
+A production-ready OCR system that follows ICDAR 2015 evaluation standards with EAST text detection and EasyOCR recognition.
 
 ## ✅ All Requirements Implemented
 
 ### 📋 Task Completion Checklist
 
-- [x] **Text Detection** - EAST model with tight, aligned bounding boxes
-- [x] **Text Recognition** - Tesseract with optimized preprocessing
+- [x] **Text Detection** - EasyOCR (CRAFT) with tight, aligned bounding boxes (ICDAR2015 compliant)
+- [x] **Text Recognition** - EasyOCR with optimized preprocessing
 - [x] **Visualization** - Annotated images with bounding boxes
 - [x] **Text Export** - Clean `output_text.txt` with proper formatting
 - [x] **ICDAR 2015 Metrics** - Precision, Recall, F-score, IoU
@@ -72,11 +72,10 @@ OCR Processing Course
 OCR/backend/
 ├── app.py                    # FastAPI endpoint + pipeline orchestration
 ├── ocr/
-│   ├── detector.py          # EAST text detection
-│   ├── recognizer.py        # Tesseract OCR
+│   ├── detector.py          # EAST text detection (ICDAR2015)
+│   ├── easyocr_engine.py    # EasyOCR Wrapper
 │   ├── evaluator.py         # ICDAR 2015 metrics
-│   ├── preprocess.py        # Image preprocessing utilities
-│   └── postprocess.py       # Output formatting
+│   └── post_process.py      # Output formatting & CCCD parsing
 ├── models/
 │   └── frozen_east_text_detection.pb
 └── outputs/                 # Generated files
@@ -162,13 +161,13 @@ Expected output:
 
 ## 🔧 Configuration
 
-### Tesseract Languages
+### EasyOCR Languages
 ```python
-# Default: English
-response = requests.post(url, files={"file": f}, data={"lang": "eng"})
+# Default: Vietnamese + English
+response = requests.post(url, files={"file": f}, data={"lang": "vie"})
 
-# Multiple languages
-data={"lang": "eng+fra"}
+# English only
+data={"lang": "eng"}
 ```
 
 ### Detection Confidence

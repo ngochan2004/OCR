@@ -13,6 +13,7 @@ from ocr import evaluator
 try:
     from ocr.easyocr_engine import create_easyocr_engine, draw_results
     from ocr.post_process import process_cccd_ocr
+    from ocr.post_process import process_cccd_ocr
     EASYOCR_AVAILABLE = True
     _easyocr_engine_cache = None
 except ImportError as e:
@@ -94,6 +95,9 @@ async def ocr(
             return JSONResponse(status_code=500, content={"error": "EasyOCR initialization failed"})
             
         # Run OCR
+        # Use EasyOCR for both detection (CRAFT) and recognition (CRNN)
+        # This is often more accurate than the frozen EAST model
+        print("Running EasyOCR (Detection + Recognition)...")
         ocr_result = engine.detect_and_recognize(img)
         
     except Exception as e:
